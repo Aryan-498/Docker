@@ -131,6 +131,16 @@ Only layers after the `COPY` instruction are rebuilt due to caching.
 **Output:**
 
 ```bash
+=> [internal] load build definition from Dockerfile                                                                                      0.0s
+ => => transferring dockerfile: 144B                                                                                                      0.0s
+ => WARN: JSONArgsRecommended: JSON arguments recommended for CMD to prevent unintended behavior related to OS signals (line 6)           0.0s
+ => [internal] load metadata for docker.io/library/ubuntu:latest                                                                          0.0s
+ => [internal] load .dockerignore                                                                                                         0.0s 
+ => => transferring context: 2B                                                                                                           0.0s 
+ => [1/5] FROM docker.io/library/ubuntu:latest@sha256:d1e2e92c075e5ca139d51a140fff46f84315c0fdce203eab2807c7e495eff4f9                    0.0s 
+ => => resolve docker.io/library/ubuntu:latest@sha256:d1e2e92c075e5ca139d51a140fff46f84315c0fdce203eab2807c7e495eff4f9                    0.0s 
+ => [internal] load build context                                                                                                         0.0s 
+ => => transferring context: 32B  
 ```
 
 ---
@@ -149,6 +159,14 @@ This uploads your image to Docker Hub so others can access it.
 **Output:**
 
 ```bash
+The push refers to repository [docker.io/asher122498/java-app]
+b1cba2e842ca: Pushed
+d04be0b52c6c: Pushed
+0b514486d6ee: Pushed
+a4f3b388b11b: Pushed
+45131a462b18: Pushed
+4cbaad1e2a1a: Pushed
+1.0: digest: sha256:d41bfe2a8f9c9fa8999e070c21dd0d823f62348214fa388ffe529f23df3d3d62 size: 856
 ```
 
 ---
@@ -165,6 +183,11 @@ This allows the image to be used on any system.
 **Output:**
 
 ```bash
+1.0: Pulling from asher122498/java-app
+Digest: sha256:d41bfe2a8f9c9fa8999e070c21dd0d823f62348214fa388ffe529f23df3d3d62
+Status: Image is up to date for asher122498/java-app:1.0
+docker.io/asher122498/java-app:1.0
+Hello from Dockerfile automation
 ```
 
 ---
