@@ -2,7 +2,7 @@
 
 layout: default
 title: Home
------------
+---
 
 # Containerization and DevOps Lab
 
