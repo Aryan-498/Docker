@@ -1,3 +1,8 @@
+---
+layout: default
+title: Docker Volumes
+---
+
 # Docker Volumes, Bind Mounts and tmpfs
 
 ---

@@ -1,3 +1,8 @@
+---
+layout: default
+title: Docker Networking
+---
+
 # Docker Networking (Practical + Concepts)
 
 ---

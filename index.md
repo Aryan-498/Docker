@@ -1,3 +1,8 @@
+---
+layout: default
+title: Home
+---
+
 # Containerization and DevOps Lab
 
 This repository contains structured notes, commands, and practical implementations for Containerization and DevOps using Docker.

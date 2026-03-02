@@ -1,3 +1,7 @@
+---
+layout: default
+title: Docker Basic Commands
+---
 # Docker Basic Commands
 
 ## Objective

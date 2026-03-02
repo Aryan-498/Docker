@@ -1,3 +1,8 @@
+---
+layout: default
+title: Docker Compose
+---
+
 # Docker Compose
 
 ## 1. Concept: Docker Compose vs Docker Run

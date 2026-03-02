@@ -1,3 +1,8 @@
+---
+layout: default
+title: Docker Swarm
+---
+
 # Docker Swarm 
 
 ## Introduction
