@@ -253,6 +253,162 @@ In host mode, the container directly uses the host’s networking stack. Service
 | Use Case    | Small setups         | Large deployments |
 
 ---
+## WSL Command Execution
+
+### List Available Networks
+
+```bash
+aryan_1234@Asher:~$ docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+31616f46d165   bridge    bridge    local
+a949c49a1f96   host      host      local
+cea44970056d   none      null      local
+```
+
+---
+
+### Inspect Default Bridge Network
+
+```bash
+aryan_1234@Asher:~$ docker network inspect bridge
+[
+    {
+        "Name": "bridge",
+        "Id": "31616f46d165049ee9c62fd82cea0536491313c7a4bd9b63858b1849a333b663",
+        "Created": "2026-02-18T14:38:09.64660814+05:30",
+        "Scope": "local",
+        "Driver": "bridge",
+        "EnableIPv4": true,
+        "EnableIPv6": false,
+        "IPAM": {
+            "Driver": "default",
+            "Options": null,
+            "Config": [
+                {
+                    "Subnet": "172.17.0.0/16",
+                    "IPRange": "",
+                    "Gateway": "172.17.0.1"
+                }
+            ]
+        },
+        ...
+    }
+]
+```
+
+---
+
+### Create a Custom Network
+
+```bash
+aryan_1234@Asher:~$ docker network create my_bridge
+edabda8e9816e73a6e48c82732cfb23f3bef5dfb53c25f27434121f310821baa
+```
+
+---
+
+### Inspect Custom Network
+
+```bash
+aryan_1234@Asher:~$ docker network inspect my_bridge
+[
+    {
+        "Name": "my_bridge",
+        "Driver": "bridge",
+        "IPAM": {
+            "Config": [
+                {
+                    "Subnet": "172.18.0.0/16",
+                    "Gateway": "172.18.0.1"
+                }
+            ]
+        }
+    }
+]
+```
+
+---
+
+### Run First Container (nginx)
+
+```bash
+aryan_1234@Asher:~$ docker run -dit --name container1 --network my_bridge nginx
+33073f88712c85a53336a0f61d3d4de085d7ea76445654e6081535fd51d4db64
+```
+
+---
+
+### Run Second Container (busybox)
+
+```bash
+aryan_1234@Asher:~$ docker run -dit --name container2 --network my_bridge busybox
+Unable to find image 'busybox:latest' locally
+latest: Pulling from library/busybox
+...
+Status: Downloaded newer image for busybox:latest
+d525cc4a02bbee90c344acd1992c5ef81d6f005ff4c82d76600659792b486862
+```
+
+---
+
+### Test Connectivity Between Containers
+
+```bash
+aryan_1234@Asher:~$ docker exec -it container2 ping container1
+PING container1 (172.18.0.2): 56 data bytes
+64 bytes from 172.18.0.2: seq=0 ttl=64 time=0.397 ms
+...
+44 packets transmitted, 44 packets received, 0% packet loss
+```
+
+---
+
+### Inspect Container Details
+
+```bash
+aryan_1234@Asher:~$ docker inspect container1
+[ ... full container details ... ]
+```
+
+---
+
+### Extract IP Information
+
+```bash
+aryan_1234@Asher:~$ docker inspect container1 | grep IP
+"IPAddress": "172.18.0.2",
+```
+
+---
+
+### Test Network Isolation
+
+```bash
+aryan_1234@Asher:~$ docker exec -it container2 ping 172.17.0.2
+PING 172.17.0.2 (172.17.0.2): 56 data bytes
+--- 172.17.0.2 ping statistics ---
+13 packets transmitted, 0 packets received, 100% packet loss
+```
+
+---
+
+### Run Container in Host Network Mode
+
+```bash
+aryan_1234@Asher:~$ docker run -d --network host nginx
+2a2b1405645cab1c4085613d4863b7826526058f45b7212ee0272201f3104b83
+```
+
+---
+
+### Check Open Ports
+
+```bash
+aryan_1234@Asher:~$ ss -tulnp | grep 80
+tcp   LISTEN 0      100           0.0.0.0:6080       0.0.0.0:*
+tcp   LISTEN 0      511                 *:80               *:*
+tcp   LISTEN 0      4096                *:2380             *:*
+```
 
 ## Summary
 
