@@ -14,7 +14,7 @@ This repository contains practical experiments and notes related to Docker and D
 
 ### Docker Basics
 
-* [Docker Basic Commands](Basic%20Docker%20Commands)
+* [Docker Basic Commands](Basic-Docker-Commands)
 
 ### Data Management
 
