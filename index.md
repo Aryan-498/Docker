@@ -1,51 +1,36 @@
 ---
+
 layout: default
 title: Home
----
+-----------
 
 # Containerization and DevOps Lab
 
-This repository contains structured notes, commands, and practical implementations for Containerization and DevOps using Docker.
-
-The content is organized topic-wise with separate markdown files for each concept, including commands, explanations, and outputs.
+This repository contains practical experiments and notes related to Docker and DevOps concepts. Each section includes commands, explanations, and outputs from hands-on practice.
 
 ---
 
-## Repository Structure
+## Topics
 
-### Docker Fundamentals
+### Docker Basics
 
-* [Docker Basic Commands](./Basic%20Docker%20Commands.md)
+* [Docker Basic Commands](Basic%20Docker%20Commands)
 
----
+### Data Management
 
-### Docker Storage
+* [Volumes](Volumes)
 
-* [Volumes](./Volumes.md)
+### Networking
 
----
+* [Networking](Networking)
 
-### Docker Networking
+### Multi-Container Applications
 
-* [Docker Networking](./Networking.md)
+* [Docker Compose](Compose)
 
----
+### Orchestration
 
-### Docker Compose
-
-* [Docker Compose](./Compose.md)
+* [Docker Swarm](Swarm)
 
 ---
 
-### Docker Swarm
-
-* [Docker Swarm](./Swarm.md)
-
----
-
-## Additional Files
-
-* `Java-Docker/` → Contains Dockerfile-based Java application
-* `wordpress.png` → Screenshot of WordPress setup
-
----
