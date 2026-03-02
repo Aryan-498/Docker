@@ -40,7 +40,7 @@ The content is organized topic-wise with separate markdown files for each concep
 
 ## Additional Files
 
-* `Java-Docker/` → Contains Dockerfile-based Java project
+* `Java-Docker/` → Contains Dockerfile-based Java application
 * `wordpress.png` → Screenshot of WordPress setup
 
 ---
