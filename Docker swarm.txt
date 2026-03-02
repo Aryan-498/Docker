@@ -1,0 +1,330 @@
+aryan_1234@Asher:~$ docker swarm init
+Error response from daemon: could not choose an IP address to advertise since this system has multiple addresses on different interfaces (10.255.255.254 onlo and 172.22.216.77 on eth0) - specify one with --advertise-addr
+aryan_1234@Asher:~$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet 10.255.255.254/32 brd 10.255.255.254 scope global lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 00:15:5d:bb:20:07 brd ff:ff:ff:ff:ff:ff
+    inet 172.22.216.77/20 brd 172.22.223.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::215:5dff:febb:2007/64 scope link
+       valid_lft forever preferred_lft forever
+3: br-3dbaa42a2379: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 26:ca:5a:a7:95:16 brd ff:ff:ff:ff:ff:ff
+    inet 172.18.0.1/16 brd 172.18.255.255 scope global br-3dbaa42a2379
+       valid_lft forever preferred_lft forever
+4: br-80dcce09017c: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 1e:f5:06:69:61:65 brd ff:ff:ff:ff:ff:ff
+    inet 172.19.0.1/16 brd 172.19.255.255 scope global br-80dcce09017c
+       valid_lft forever preferred_lft forever
+5: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default
+    link/ether 4a:30:ce:ce:d2:13 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+aryan_1234@Asher:~$ docker swarm init --advertise-addr 172.22.216.77
+Swarm initialized: current node (rpbqpmd5nhm34e55zy7dwz7qb) is now a manager.
+
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-2yn2f5jjki4msyob4zm3vmpm5daim9gi754vg7i8yby3pq78q5-a8mbxzhzhbqr6f2pqfy2p31ms 172.22.216.77:2377
+
+To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+aryan_1234@Asher:~$ docker node ls
+ID                            HOSTNAME   STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+rpbqpmd5nhm34e55zy7dwz7qb *   Asher      Ready     Active         Leader           29.2.1
+aryan_1234@Asher:~$ docker swarm join --token <TOKEN> <MANAGER-IP>:2377
+-bash: syntax error near unexpected token `<'
+aryan_1234@Asher:~$ docker swarm join --token SWMTKN-1-2yn2f5jjki4msyob4zm3vmpm5daim9gi754vg7i8yby3pq78q5-a8mbxzhzhbqr6f2pqfy2p31ms 172.22.216.77:2377
+Error response from daemon: This node is already part of a swarm. Use "docker swarm leave" to leave this swarm and join another one.
+aryan_1234@Asher:~$ docker node ls
+ID                            HOSTNAME   STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+rpbqpmd5nhm34e55zy7dwz7qb *   Asher      Ready     Active         Leader           29.2.1
+aryan_1234@Asher:~$ docker run -d --privileged --name worker1 docker:dind
+Unable to find image 'docker:dind' locally
+dind: Pulling from library/docker
+26d3092c5184: Pull complete
+49eae5b0ffe9: Pull complete
+4f4fb700ef54: Pull complete
+f7ad56decde4: Pull complete
+9ec2ed410cea: Pull complete
+b27c5afc8cc7: Pull complete
+e365fc1dcf70: Pull complete
+97f3f6dd36e1: Pull complete
+048c355ee240: Pull complete
+5521b863247b: Pull complete
+38eaa4baf386: Pull complete
+4ed25dc6106a: Pull complete
+4a9632763a5f: Pull complete
+273ed7fc2746: Pull complete
+342aaf2cc084: Pull complete
+bca36398fa62: Download complete
+Digest: sha256:68f6d9ab84623d1116c5432a3b924a07ee09960e6129ca1cb03ef14010588cb4
+Status: Downloaded newer image for docker:dind
+6f77ba157718f484e61dd76f74e99ab04df54c36671a2affe0fec0ef143fa20f
+aryan_1234@Asher:~$ docker exec -it worker1 sh
+/ # docker swarm join --token YOUR_TOKEN 172.22.216.77:2377
+Error response from daemon: invalid join token
+/ # docker swarm join --token SWMTKN-1-2yn2f5jjki4msyob4zm3vmpm5daim9gi754vg7i8yby3pq78q5-a8mbxzhzhbqr6f2pqfy2p31ms 172.22.216.77:2377
+This node joined a swarm as a worker.
+/ # ^C
+
+/ # exit
+aryan_1234@Asher:~$ docker node ls
+ID                            HOSTNAME       STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
+wlbfk0fre8qy7l8l6rg6ygh89     6f77ba157718   Ready     Active                          29.2.1
+rpbqpmd5nhm34e55zy7dwz7qb *   Asher          Ready     Active         Leader           29.2.1
+aryan_1234@Asher:~$ docker service create \
+  --name webapp \
+  --replicas 3 \
+  -p 8080:80 \
+  nginx
+eefcgssqr6tdjtxv6b9hqa9uz
+overall progress: 3 out of 3 tasks
+1/3: running   [==================================================>]
+2/3: running   [==================================================>]
+3/3: running   [==================================================>]
+verify: Service eefcgssqr6tdjtxv6b9hqa9uz converged
+aryan_1234@Asher:~$ docker service ls
+ID             NAME      MODE         REPLICAS   IMAGE          PORTS
+eefcgssqr6td   webapp    replicated   3/3        nginx:latest   *:8080->80/tcp
+aryan_1234@Asher:~$ docker service ps webapp
+ID             NAME       IMAGE          NODE           DESIRED STATE   CURRENT STATE            ERROR     PORTS
+vonnshx6nicg   webapp.1   nginx:latest   6f77ba157718   Running         Running 38 seconds ago
+wvznre25n4ip   webapp.2   nginx:latest   Asher          Running         Running 41 seconds ago
+tnprdxqgx35p   webapp.3   nginx:latest   6f77ba157718   Running         Running 37 seconds ago
+aryan_1234@Asher:~$ docker service inspect webapp
+[
+    {
+        "ID": "eefcgssqr6tdjtxv6b9hqa9uz",
+        "Version": {
+            "Index": 18
+        },
+        "CreatedAt": "2026-02-28T05:54:56.617092584Z",
+        "UpdatedAt": "2026-02-28T05:54:56.622917621Z",
+        "Spec": {
+            "Name": "webapp",
+            "Labels": {},
+            "TaskTemplate": {
+                "ContainerSpec": {
+                    "Image": "nginx:latest@sha256:0236ee02dcbce00b9bd83e0f5fbc51069e7e1161bd59d99885b3ae1734f3392e",
+                    "Init": false,
+                    "StopGracePeriod": 10000000000,
+                    "DNSConfig": {},
+                    "Isolation": "default"
+                },
+                "Resources": {
+                    "Limits": {},
+                    "Reservations": {}
+                },
+                "RestartPolicy": {
+                    "Condition": "any",
+                    "Delay": 5000000000,
+                    "MaxAttempts": 0
+                },
+                "Placement": {
+                    "Platforms": [
+                        {
+                            "Architecture": "amd64",
+                            "OS": "linux"
+                        },
+                        {
+                            "Architecture": "unknown",
+                            "OS": "unknown"
+                        },
+                        {
+                            "OS": "linux"
+                        },
+                        {
+                            "Architecture": "unknown",
+                            "OS": "unknown"
+                        },
+                        {
+                            "OS": "linux"
+                        },
+                        {
+                            "Architecture": "unknown",
+                            "OS": "unknown"
+                        },
+                        {
+                            "Architecture": "arm64",
+                            "OS": "linux"
+                        },
+                        {
+                            "Architecture": "unknown",
+                            "OS": "unknown"
+                        },
+                        {
+                            "Architecture": "386",
+                            "OS": "linux"
+                        },
+                        {
+                            "Architecture": "unknown",
+                            "OS": "unknown"
+                        },
+                        {
+                            "Architecture": "ppc64le",
+                            "OS": "linux"
+                        },
+                        {
+                            "Architecture": "unknown",
+                            "OS": "unknown"
+                        },
+                        {
+                            "Architecture": "riscv64",
+                            "OS": "linux"
+                        },
+                        {
+                            "Architecture": "unknown",
+                            "OS": "unknown"
+                        },
+                        {
+                            "Architecture": "s390x",
+                            "OS": "linux"
+                        },
+                        {
+                            "Architecture": "unknown",
+                            "OS": "unknown"
+                        }
+                    ]
+                },
+                "ForceUpdate": 0,
+                "Runtime": "container"
+            },
+            "Mode": {
+                "Replicated": {
+                    "Replicas": 3
+                }
+            },
+            "UpdateConfig": {
+                "Parallelism": 1,
+                "FailureAction": "pause",
+                "Monitor": 5000000000,
+                "MaxFailureRatio": 0,
+                "Order": "stop-first"
+            },
+            "RollbackConfig": {
+                "Parallelism": 1,
+                "FailureAction": "pause",
+                "Monitor": 5000000000,
+                "MaxFailureRatio": 0,
+                "Order": "stop-first"
+            },
+            "EndpointSpec": {
+                "Mode": "vip",
+                "Ports": [
+                    {
+                        "Protocol": "tcp",
+                        "TargetPort": 80,
+                        "PublishedPort": 8080,
+                        "PublishMode": "ingress"
+                    }
+                ]
+            }
+        },
+        "Endpoint": {
+            "Spec": {
+                "Mode": "vip",
+                "Ports": [
+                    {
+                        "Protocol": "tcp",
+                        "TargetPort": 80,
+                        "PublishedPort": 8080,
+                        "PublishMode": "ingress"
+                    }
+                ]
+            },
+            "Ports": [
+                {
+                    "Protocol": "tcp",
+                    "TargetPort": 80,
+                    "PublishedPort": 8080,
+                    "PublishMode": "ingress"
+                }
+            ],
+            "VirtualIPs": [
+                {
+                    "NetworkID": "h6535dmbnrd0qb8i1gm3h7x4v",
+                    "Addr": "10.0.0.4/24"
+                }
+            ]
+        }
+    }
+]
+aryan_1234@Asher:~$ docker service inspect --pretty webapp
+
+ID:             eefcgssqr6tdjtxv6b9hqa9uz
+Name:           webapp
+Service Mode:   Replicated
+ Replicas:      3
+Placement:
+UpdateConfig:
+ Parallelism:   1
+ On failure:    pause
+ Monitoring Period: 5s
+ Max failure ratio: 0
+ Update order:      stop-first
+RollbackConfig:
+ Parallelism:   1
+ On failure:    pause
+ Monitoring Period: 5s
+ Max failure ratio: 0
+ Rollback order:    stop-first
+ContainerSpec:
+ Image:         nginx:latest@sha256:0236ee02dcbce00b9bd83e0f5fbc51069e7e1161bd59d99885b3ae1734f3392e
+ Init:          false
+Resources:
+Endpoint Mode:  vip
+Ports:
+ PublishedPort = 8080
+  Protocol = tcp
+  TargetPort = 80
+  PublishMode = ingress
+
+aryan_1234@Asher:~$ docker service scale webapp=6
+webapp scaled to 6
+overall progress: 6 out of 6 tasks
+1/6: running   [==================================================>]
+2/6: running   [==================================================>]
+3/6: running   [==================================================>]
+4/6: running   [==================================================>]
+5/6: running   [==================================================>]
+6/6: running   [==================================================>]
+verify: Service webapp converged
+aryan_1234@Asher:~$ docker service ls
+ID             NAME      MODE         REPLICAS   IMAGE          PORTS
+eefcgssqr6td   webapp    replicated   6/6        nginx:latest   *:8080->80/tcp
+aryan_1234@Asher:~$ docker service rm webapp
+webapp
+aryan_1234@Asher:~$ docker service create \
+  --name app \
+  --replicas 3 \
+  nginx:1.25
+image nginx:1.25 could not be accessed on a registry to record
+its digest. Each node will access nginx:1.25 independently,
+possibly leading to different nodes running different
+versions of the image.
+
+vnnqo44cji3l15690al2zcalv
+overall progress: 3 out of 3 tasks
+1/3: running   [==================================================>]
+2/3: running   [==================================================>]
+3/3: running   [==================================================>]
+verify: Service vnnqo44cji3l15690al2zcalv converged
+aryan_1234@Asher:~$ docker service update \
+  --image nginx:latest \
+  --update-parallelism 1 \
+  --update-delay 10s \
+  app
+app
+overall progress: 3 out of 3 tasks
+1/3: running   [==================================================>]
+2/3: running   [==================================================>]
+3/3: running   [==================================================>]
+verify: Service app converged
+aryan_1234@Asher:~$
