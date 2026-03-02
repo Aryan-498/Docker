@@ -1,11 +1,6 @@
-FROM ubuntu:22.04
-
-RUN apt update && apt install -y openjdk-17-jdk
-
+FROM ubuntu
+RUN install java
 WORKDIR /home/app
-
 COPY Hello.java .
-
 RUN javac Hello.java
-
-CMD ["java", "Hello"]
+CMD java Hello

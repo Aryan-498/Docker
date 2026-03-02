@@ -19,6 +19,31 @@ This command builds a Docker image using the Dockerfile present in the current d
 **Output:**
 
 ```bash
+[+] Building 91.5s (11/11) FINISHED                                                                                             docker:default
+ => [internal] load build definition from Dockerfile                                                                                      0.0s
+ => => transferring dockerfile: 200B                                                                                                      0.0s 
+ => [internal] load metadata for docker.io/library/ubuntu:22.04                                                                           3.6s 
+ => [auth] library/ubuntu:pull token for registry-1.docker.io                                                                             0.0s
+ => [internal] load .dockerignore                                                                                                         0.0s
+ => => transferring context: 2B                                                                                                           0.0s 
+ => [1/5] FROM docker.io/library/ubuntu:22.04@sha256:3ba65aa20f86a0fad9df2b2c259c613df006b2e6d0bfcc8a146afb8c525a9751                     2.5s 
+ => => resolve docker.io/library/ubuntu:22.04@sha256:3ba65aa20f86a0fad9df2b2c259c613df006b2e6d0bfcc8a146afb8c525a9751                     0.0s
+ => => sha256:b1cba2e842ca52b95817f958faf99734080c78e92e43ce609cde9244867b49ed 29.54MB / 29.54MB                                          1.6s 
+ => => extracting sha256:b1cba2e842ca52b95817f958faf99734080c78e92e43ce609cde9244867b49ed                                                 0.8s 
+ => [internal] load build context                                                                                                         0.0s 
+ => => transferring context: 182B                                                                                                         0.0s 
+ => [2/5] RUN apt update && apt install -y openjdk-17-jdk                                                                                58.5s 
+ => [3/5] WORKDIR /home/app                                                                                                               0.1s 
+ => [4/5] COPY Hello.java .                                                                                                               0.0s 
+ => [5/5] RUN javac Hello.java                                                                                                            0.8s 
+ => exporting to image                                                                                                                   25.7s 
+ => => exporting layers                                                                                                                  22.2s 
+ => => exporting manifest sha256:fae49f47a7a20adc404eaf0cf9162a15923f3b581efcf45d233c63906d129f69                                         0.0s 
+ => => exporting config sha256:652fff22a0247f781dd466ecb0827fadf5b3f48138c29b8ebd7f0b9ea59d5e42                                           0.0s 
+ => => exporting attestation manifest sha256:581872ddc95a52b681d5c463e0ebabfea32ad6fc885b88f9f685b66bd1e15285                             0.0s 
+ => => exporting manifest list sha256:d41bfe2a8f9c9fa8999e070c21dd0d823f62348214fa388ffe529f23df3d3d62                                    0.0s 
+ => => naming to docker.io/library/java-app:1.0                                                                                           0.0s 
+ => => unpacking to docker.io/library/java-app:1.0                                                                                        3.4s 
 ```
 
 ---
@@ -34,6 +59,9 @@ This command lists all locally available Docker images and verifies whether the 
 **Output:**
 
 ```bash
+IMAGE           ID             DISK USAGE   CONTENT SIZE   EXTRA
+java-app:1.0    d41bfe2a8f9c       1.17GB          341MB
+ubuntu:latest   d1e2e92c075e        119MB         31.7MB
 ```
 
 ---
@@ -49,6 +77,7 @@ This command runs a container using the previously built image.
 **Output:**
 
 ```bash
+Hello from Dockerfile automation
 ```
 
 ---
@@ -60,11 +89,6 @@ docker run -it java-app:1.0 bash
 ```
 
 This command overrides the default command defined in the Dockerfile and opens an interactive bash shell inside the container.
-
-**Output:**
-
-```bash
-```
 
 ---
 
